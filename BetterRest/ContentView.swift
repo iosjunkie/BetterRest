@@ -13,10 +13,30 @@ struct ContentView: View {
     @State private var wakeUp = defaultWakeTime
     @State private var sleepAmount = 8.0
     @State private var coffeeAmount = 1
+    var idealSleep: String {
+        var idealSleep = ""
+        let model = SleepCalculator()
+        let components = Calendar.current.dateComponents([.hour, .minute], from: wakeUp)
+        let hour = (components.hour ?? 0) * 60 * 60
+        let minute = (components.minute ?? 0) * 60
+        do {
+            let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
+            let sleepTime = wakeUp - prediction.actualSleep
+            let formatter = DateFormatter()
+            formatter.timeStyle = .short
+            idealSleep = formatter.string(from: sleepTime)
+        } catch {
+            alertTitle = "Error"
+            alertMessage = "Sorry, there was a problem calculating your bedtime."
+            alertShowing = true
+            idealSleep = alertMessage
+        }
+        return idealSleep
+    }
     
-//    @State private var alertTitle = ""
-//    @State private var alertMessage = ""
-//    @State private var alertShowing = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var alertShowing = false
     var body: some View {
         NavigationView {
             Form {
@@ -35,6 +55,8 @@ struct ContentView: View {
                     Stepper(value: $sleepAmount, in: 4...12, step: 0.15) {
                         Text("\(sleepAmount, specifier: "%.2f") hours")
                     }
+                }
+                VStack {
                     Picker("Daily coffee intake", selection: $coffeeAmount) {
                         ForEach(1...20, id: \.self) { cup in
                             Text("\(cup) \(cup == 1 ? "cup" : "cups")").tag(cup)
@@ -55,7 +77,7 @@ struct ContentView: View {
                 }
             }
         .navigationBarTitle("BetterRest")
-            .navigationBarItems(trailing: Button(action: calculateBedTime) { Text("Calculate") })
+//            .navigationBarItems(trailing: Button(action: calculateBedTime) { Text("Calculate") })
         }
 //        .alert(isPresented: $alertShowing) {
 //            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
