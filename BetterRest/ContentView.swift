@@ -73,7 +73,7 @@ struct ContentView: View {
                 HStack {
                     Text("Ideal bed time")
                     Spacer()
-                    Text("\(sleepAmount, specifier: "%.2f") hours")
+                    Text("\(idealSleep)")
                 }
             }
         .navigationBarTitle("BetterRest")
@@ -91,26 +91,26 @@ struct ContentView: View {
         return Calendar.current.date(from: components) ?? Date()
     }
     
-    func calculateBedTime() {
-        let model = SleepCalculator()
-        let components = Calendar.current.dateComponents([.hour, .minute], from: wakeUp)
-        let hour = (components.hour ?? 0) * 60 * 60
-        let minute = (components.minute ?? 0) * 60
-        do {
-            let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
-            let sleepTime = wakeUp - prediction.actualSleep
-            let formatter = DateFormatter()
-            formatter.timeStyle = .short
-
+//    func calculateBedTime() {
+//        let model = SleepCalculator()
+//        let components = Calendar.current.dateComponents([.hour, .minute], from: wakeUp)
+//        let hour = (components.hour ?? 0) * 60 * 60
+//        let minute = (components.minute ?? 0) * 60
+//        do {
+//            let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
+//            let sleepTime = wakeUp - prediction.actualSleep
+//            let formatter = DateFormatter()
+//            formatter.timeStyle = .short
+//
 //            alertMessage = formatter.string(from: sleepTime)
 //            alertTitle = "Your ideal bedtime is…"
-        } catch {
+//        } catch {
 //            alertTitle = "Error"
 //            alertMessage = "Sorry, there was a problem calculating your bedtime."
-            
-        }
+//
+//        }
 //        alertShowing = true
-    }
+//    }
 }
 
 struct ContentView_Previews: PreviewProvider {
