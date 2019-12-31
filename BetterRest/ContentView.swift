@@ -35,15 +35,18 @@ struct ContentView: View {
                     Stepper(value: $sleepAmount, in: 4...12, step: 0.15) {
                         Text("\(sleepAmount, specifier: "%.2f") hours")
                     }
-                    Text("Daily coffee intake")
-                        .font(.headline)
-                    Stepper(value: $coffeeAmount, in: 1...20) {
-                        if coffeeAmount == 1 {
-                            Text("1 cup")
-                        } else {
-                            Text("\(coffeeAmount) cups")
+                    Picker("Daily coffee intake", selection: $coffeeAmount) {
+                        ForEach(1...20, id: \.self) { cup in
+                            Text("\(cup) \(cup == 1 ? "cup" : "cups")").tag(cup)
                         }
                     }
+//                    Stepper(value: $coffeeAmount, in: 1...20) {
+//                        if coffeeAmount == 1 {
+//                            Text("1 cup")
+//                        } else {
+//                            Text("\(coffeeAmount) cups")
+//                        }
+//                    }
                 }
                 HStack {
                     Text("Ideal bed time")
